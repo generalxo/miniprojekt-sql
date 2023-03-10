@@ -4,28 +4,15 @@
     {
         static void Main(string[] args)
         {
-            List<PersonModel> people = SqlConnection.LoadPersonModel();
-
-            Console.WriteLine();
-            for (int i = 0; i < people.Count; i++)
-            {
-                Console.WriteLine($"id: {people[i].id}");
-                Console.WriteLine($"person: {people[i].person_name}");
-            }
-            bool runmenu = true;
-
-            //while (runmenu)
-            //{
-            //    string selectedItem = DrawMenu(menuOptions);
-            //}
-
-
+            StartMenu();
         }
         public static int menuIndex = 0;
-        public static string DrawMenu(List<string> menuItem)
+        public static string DrawMenu(List<string> menuItem, string menuMsg)
         {
 
             Console.Clear();
+            Console.WriteLine("");
+            Console.WriteLine(menuMsg);
             Console.WriteLine("");
 
             //looping through menuItems and displaying them. if menuIndex == i add "["  "]" to menuItem[i]
@@ -33,11 +20,11 @@
             {
                 if (i == menuIndex)
                 {
-                    Console.WriteLine($"[{menuItem[i]}]");
+                    Console.WriteLine($" [{menuItem[i]}]");
                 }
                 else
                 {
-                    Console.WriteLine($" {menuItem[i]} ");
+                    Console.WriteLine($"  {menuItem[i]} ");
                 }
             }
 
@@ -78,6 +65,41 @@
             }
             //else
             return "";
+        }
+
+        public static void StartMenu()
+        {
+            Console.CursorVisible = false;
+            Console.Clear();
+
+            bool runmenu = true;
+            List<string> menuOptions = new List<string> { "Add time", "Create user", "Create project" };
+
+            //List<PersonModel> people = SqlConnection.LoadPersonModel();
+
+            string menuMsg = "  Please select an option";
+
+            while (runmenu)
+            {
+                string selectedMenuOption = DrawMenu(menuOptions, menuMsg);
+
+                if (selectedMenuOption == menuOptions[0])
+                {
+                    Console.WriteLine("Selecting user would start here");
+                    Console.ReadKey();
+                }
+                else if (selectedMenuOption == menuOptions[1])
+                {
+                    Console.WriteLine("Create user would start here");
+                    Console.ReadKey();
+                }
+                else if (selectedMenuOption == menuOptions[2])
+                {
+                    Console.WriteLine("Create project would start here");
+                    Console.ReadKey();
+                }
+
+            }
         }
 
     }

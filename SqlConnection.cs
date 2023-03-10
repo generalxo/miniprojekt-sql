@@ -16,7 +16,7 @@ namespace MiniprojektSql
         {
             using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
             {
-                var output = cnn.Query<PersonModel>($"SELECT * FROM public.kkj_person", new DynamicParameters());
+                var output = cnn.Query<PersonModel>($"SELECT * FROM public.owa_person", new DynamicParameters());
                 return output.ToList();
 
             }
