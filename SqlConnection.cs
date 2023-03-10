@@ -21,5 +21,24 @@ namespace MiniprojektSql
 
             }
         }
+
+        public static List<ProjectModel> LoadProjectModel()
+        {
+            using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
+            {
+                var output = cnn.Query<ProjectModel>($"SELECT * FROM public.owa_project", new DynamicParameters());
+                return output.ToList();
+
+            }
+        }
+
+        public static void SaveProjectPersonModel(ProjectPersonModel model)
+        {
+            using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
+            {
+                cnn.Execute("INSERT INTO public.owa_project_person (project_id, person_id, hours) VALUES (@project_id, @person_id, @hours)", model);
+
+            }
+        }
     }
 }
