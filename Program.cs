@@ -4,18 +4,20 @@
     {
         static void Main(string[] args)
         {
-            bool runmenu = true;
-            Console.WriteLine("Hello, World!");
-            List<string> menuOptions = new List<string>();
-            menuOptions.Add("Test1");
-            menuOptions.Add("Test2");
-            menuOptions.Add("Test3");
-            menuOptions.Add("Test4");
+            List<PersonModel> people = SqlConnection.LoadPersonModel();
 
-            while (runmenu)
+            Console.WriteLine();
+            for (int i = 0; i < people.Count; i++)
             {
-                string selectedItem = DrawMenu(menuOptions);
+                Console.WriteLine($"id: {people[i].id}");
+                Console.WriteLine($"person: {people[i].person_name}");
             }
+            bool runmenu = true;
+
+            //while (runmenu)
+            //{
+            //    string selectedItem = DrawMenu(menuOptions);
+            //}
 
 
         }
