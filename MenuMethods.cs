@@ -12,7 +12,7 @@
             Console.WriteLine(menuMsg);
             Console.WriteLine("");
 
-            //looping through menuItems and displaying them. if menuIndex == i add "["  "]" to menuItem[i]
+            //looping through menuItems and displaying them. if menuIndex == i add '['  ']' to menuItem[i]
             for (int i = 0; i < menuItem.Count; i++)
             {
                 if (i == menuIndex)
@@ -71,7 +71,7 @@
 
             //Declaration of variables
             bool runmenu = true;
-            List<string> menuOptions = new List<string> { "Add time", "View timers", "Create project", "Create user", "Exit" };
+            List<string> menuOptions = new() { "Add time", "View timers", "Create project", "Create user", "Exit" };
 
             //Selecting MenuOption & corresponding function
             while (runmenu)
@@ -84,18 +84,15 @@
                 }
                 else if (selectedMenuOption == menuOptions[1])
                 {
-                    Console.WriteLine("View timers would start here");
-                    Console.ReadKey();
+                    ViewTime();
                 }
                 else if (selectedMenuOption == menuOptions[2])
                 {
-                    Console.WriteLine("Create project would start here");
-                    Console.ReadKey();
+                    CreateProject();
                 }
                 else if (selectedMenuOption == menuOptions[3])
                 {
-                    Console.WriteLine("Create user would start here");
-                    Console.ReadKey();
+                    CreateUser();
                 }
 
                 else if (selectedMenuOption == menuOptions[4])
@@ -166,13 +163,13 @@
                             Console.Clear();
                             Console.Write("\n  Enter whole hours worked on project\n\n  ");
                             input = Console.ReadLine();
-                            Console.WriteLine($"\n  hours: {input}");
                             int.TryParse(input, out hours);
                             projectPersonModel.project_id = selectedProject.id;
                             projectPersonModel.person_id = selectedPerson.id;
                             projectPersonModel.hours = hours;
 
                             SqlConnection.SaveProjectPersonModel(projectPersonModel);
+                            Console.WriteLine("\n  Time Saved! press any key to continue");
                             Console.ReadKey();
                             runMenu = false;
                             runSubMenu = false;
@@ -186,7 +183,99 @@
 
         public static void ViewTime()
         {
+            //This Method will display the total hours on a project
+            //Declaration & Loading Models
+            bool foundProject;
+            List<ProjectHourModel> projectHoursModels = new();
+            List<ProjectPersonModel> projectPersonModels = SqlConnection.LoadProjectPersonModel();
+            List<ProjectModel> projectModels = SqlConnection.LoadProjectModel();
+            Console.Clear();
+            for (int i = 0; i < projectPersonModels.Count; i++)
+            {
+                for (int j = 0; j < projectModels.Count; j++)
+                {
+                    //Match Found
+                    if (projectPersonModels[i].project_id == projectModels[j].id)
+                    {
+                        ProjectHourModel temp = new();
+                        temp.project_name = projectModels[j].project_name;
+                        temp.hours = projectPersonModels[i].hours;
+                        if (projectHoursModels.Count == 0)
+                        {
+                            projectHoursModels.Add(temp);
+                        }
+                        //Adding total hours of each project to a list
+                        else
+                        {
+                            foundProject = false;
+                            for (int k = 0; k < projectHoursModels.Count; k++)
+                            {
+                                if (projectHoursModels[k].project_name == temp.project_name)
+                                {
+                                    projectHoursModels[k].hours += temp.hours;
+                                    foundProject = true;
+                                }
+                            }
+                            if (foundProject == false)
+                            {
+                                projectHoursModels.Add(temp);
+                            }
+                        }
+                    }
+                }
+            }
+            //Display
+            Console.WriteLine($"\n  Total hours for each project");
+            for (int l = 0; l < projectHoursModels.Count; l++)
+            {
+                Console.WriteLine($"\n  {projectHoursModels[l].project_name}: {projectHoursModels[l].hours}");
+            }
+            Console.ReadKey();
+        }
 
+        public static void CreateUser()
+        {
+            string? input;
+            PersonModel personModel = new();
+            Console.Clear();
+            Console.Write("\n  Please enter new user name\n  ");
+            input = Console.ReadLine();
+            //Check input length for DB restrictions
+            if (input.Length == 0 || input.Length > 26)
+            {
+                Console.WriteLine("input invalid");
+                Console.WriteLine(input);
+            }
+            //Inserting project into DB
+            else
+            {
+                Console.WriteLine("\n  User Saved!\n  Press any key to continue");
+                personModel.person_name = input;
+                SqlConnection.SavePerson(personModel);
+            }
+            Console.ReadKey();
+        }
+        public static void CreateProject()
+        {
+            string? input;
+            ProjectModel projectModel = new();
+            Console.Clear();
+            Console.Write("\n  Please enter new project name\n  ");
+            input = Console.ReadLine();
+            //Check input length for DB restrictions
+            if (input.Length == 0 || input.Length > 51)
+            {
+                Console.WriteLine("input invalid");
+                Console.WriteLine(input);
+            }
+            //Inserting project into DB
+            else
+            {
+                Console.WriteLine("\n  User Saved!\n  Press any key to continue");
+                projectModel.project_name = input;
+                SqlConnection.SaveProject(projectModel);
+            }
+            Console.ReadKey();
         }
     }
 }
