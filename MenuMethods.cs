@@ -71,7 +71,7 @@
 
             //Declaration of variables
             bool runmenu = true;
-            List<string> menuOptions = new() { "Add time", "View timers", "Create project", "Create user", "Exit" };
+            List<string> menuOptions = new() { "Add time", "View all timers", "View project timers", "Create project", "Create user", "Exit" };
 
             //Selecting MenuOption & corresponding function
             while (runmenu)
@@ -84,18 +84,22 @@
                 }
                 else if (selectedMenuOption == menuOptions[1])
                 {
-                    ViewTime();
+                    ViewAllTime();
                 }
                 else if (selectedMenuOption == menuOptions[2])
                 {
-                    CreateProject();
+                    ViewProjectTime();
                 }
                 else if (selectedMenuOption == menuOptions[3])
+                {
+                    CreateProject();
+                }
+                else if (selectedMenuOption == menuOptions[4])
                 {
                     CreateUser();
                 }
 
-                else if (selectedMenuOption == menuOptions[4])
+                else if (selectedMenuOption == menuOptions[5])
                 {
                     runmenu = false;
                 }
@@ -181,7 +185,7 @@
 
         }
 
-        public static void ViewTime()
+        public static void ViewProjectTime()
         {
             //This Method will display the total hours on a project
             //Declaration & Loading Models
@@ -230,6 +234,35 @@
             {
                 Console.WriteLine($"\n  {projectHoursModels[l].project_name}: {projectHoursModels[l].hours}");
             }
+            Console.ReadKey();
+        }
+
+        public static void ViewAllTime()
+        {
+            List<ProjectPersonModel> projectPersonModels = SqlConnection.LoadProjectPersonModel();
+            List<PersonModel> personModels = SqlConnection.LoadPersonModel();
+            List<ProjectModel> projectModels = SqlConnection.LoadProjectModel();
+
+            Console.Clear();
+            Console.WriteLine("");
+
+            for (int i = 0; i < projectPersonModels.Count; i++)
+            {
+                for (int j = 0; j < personModels.Count; j++)
+                {
+                    if (projectPersonModels[i].person_id == personModels[j].id)
+                    {
+                        for (int k = 0; k < projectModels.Count; k++)
+                        {
+                            if (projectPersonModels[i].project_id == projectModels[k].id)
+                            {
+                                Console.WriteLine($"  {projectModels[k].project_name}: {personModels[j].person_name}: {projectPersonModels[i].hours}\n");
+                            }
+                        }
+                    }
+                }
+            }
+            Console.WriteLine($"\n  Press any key to continue");
             Console.ReadKey();
         }
 

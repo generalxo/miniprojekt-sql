@@ -42,6 +42,7 @@ namespace MiniprojektSql
         //Load Model Methods End
 
         //Save/Insert Model Methods Start
+        //These Methods will insert correspinding Model to
         public static void SaveProjectPersonModel(ProjectPersonModel model)
         {
             using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
